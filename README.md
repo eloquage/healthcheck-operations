@@ -11,7 +11,7 @@ A [Spatie Laravel Health](https://spatie.be/docs/laravel-health) check for pendi
 ## Requirements
 
 - PHP 8.3 or later
-- Laravel 11, 12, or 13
+- Laravel 12 or 13
 - `spatie/laravel-health` 1.39 or later
 - `timokoerber/laravel-one-time-operations` 1.x
 
