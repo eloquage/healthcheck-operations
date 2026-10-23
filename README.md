@@ -1,32 +1,37 @@
-# Healthcheck operations for Laravel
+# Healthcheck Operations for Laravel
 
-[![Tests](https://github.com/eloquage/healthcheck-operations/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eloquage/healthcheck-operations/actions)
-[![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](http://choosealicense.com/licenses/mit/)
+![Healthcheck Operations banner](art/banner.png)
+
+[![Tests](https://github.com/eloquage/healthcheck-operations/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eloquage/healthcheck-operations/actions/workflows/run-tests.yml)
 [![Latest Stable Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-operations?label=Version)](https://packagist.org/packages/illuma-law/healthcheck-operations)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
-A focused operations backlog health check for Spatie's [Laravel Health](https://spatie.be/docs/laravel-health/v1/introduction) package.
+A [Spatie Laravel Health](https://spatie.be/docs/laravel-health) check for pending [Laravel One-Time Operations](https://github.com/TimoKoerber/laravel-one-time-operations). It reports the queue size, oldest operation age, and a sample of filenames.
 
-This package provides a simple, direct health check to verify that your [Laravel One-Time Operations](https://github.com/TimoKoerber/laravel-one-time-operations) are being processed and don't remain pending for too long.
+## Requirements
 
-## Features
-
-- **Pending Operations Detection:** Automatically detects if there are any pending one-time operations waiting to be processed.
-- **Aging Backlog Check:** Monitors the age of the oldest pending operation. If operations are older than 24 hours, the check will degrade to a Failed state.
-- **Detailed Meta:** Reports the count of pending operations, the age of the oldest one, and a sample of operation filenames.
+- PHP 8.3 or later
+- Laravel 12 or 13
+- `spatie/laravel-health` 1.39 or later
+- `timokoerber/laravel-one-time-operations` 1.x
 
 ## Installation
 
-Require this package with composer:
-
-```shell
+```bash
 composer require illuma-law/healthcheck-operations
 ```
 
-## Usage & Integration
+Laravel discovers the service provider automatically. Publish the configuration to choose whether an old backlog should fail:
 
-Register the check inside your application's health service provider (e.g. `AppServiceProvider` or a dedicated `HealthServiceProvider`), alongside your other Spatie Laravel Health checks:
+```bash
+php artisan vendor:publish --tag=healthcheck-operations-config
+```
 
-### Basic Registration
+Pending operations warn by default. Set `HEALTH_OPERATIONS_REQUIRED=true` to fail when the oldest operation has been waiting for at least 24 hours. If the package cannot read the operation backlog, the check fails.
+
+## Usage
+
+Register the check in your health service provider:
 
 ```php
 use IllumaLaw\HealthCheckOperations\OperationsBacklogCheck;
@@ -37,22 +42,16 @@ Health::checks([
 ]);
 ```
 
-### Expected Result States
-
-The check interacts with the Spatie Health dashboard and JSON endpoints using these states:
-
-- **Ok:** There are no pending one-time operations.
-- **Warning:** There are pending operations, but they are relatively new (under 24 hours).
-- **Failed:** There are pending operations that have been sitting unprocessed for more than 24 hours.
+No pending operations returns **OK**. Pending operations return **Warning** by default; a backlog at least 24 hours old returns **Failed** when the required setting is enabled.
 
 ## Testing
 
-Run the test suite:
-
-```shell
+```bash
 composer test
+composer analyse
+vendor/bin/pint --test
 ```
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+MIT. See [LICENSE.md](LICENSE.md).

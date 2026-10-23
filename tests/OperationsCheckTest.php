@@ -25,7 +25,6 @@ it('succeeds when there are no pending operations', function () {
 
 it('warns when there are recent pending operations', function () {
     File::put($this->opsDir.'/2023_01_01_000000_op.php', '<?php ');
-    File::put($this->opsDir.'/2023_01_01_000000_op.php', '<?php ');
 
     $result = OperationsBacklogCheck::new()->run();
 
@@ -33,8 +32,7 @@ it('warns when there are recent pending operations', function () {
         ->and($result->shortSummary)->toBe('1 pending');
 });
 
-it('fails when there are old pending operations', function () {
-    $path = $this->opsDir.'/2023_01_01_000000_old_op.php';
+it('warns when old pending operations are not required', function () {
     $path = $this->opsDir.'/2023_01_01_000000_old_op.php';
     File::put($path, '<?php ');
 
@@ -42,6 +40,30 @@ it('fails when there are old pending operations', function () {
 
     $result = OperationsBacklogCheck::new()->run();
 
+    expect($result->status)->toEqual(Status::warning())
+        ->and($result->shortSummary)->toBe('1 pending');
+});
+
+it('fails when old pending operations are required', function () {
+    config()->set('healthcheck-operations.required', true);
+
+    $path = $this->opsDir.'/2023_01_01_000000_old_op.php';
+    File::put($path, '<?php ');
+    touch($path, (int) now()->subHours(25)->timestamp);
+
+    $result = OperationsBacklogCheck::new()->run();
+
     expect($result->status)->toEqual(Status::failed())
         ->and($result->shortSummary)->toBe('1 pending');
+});
+
+it('fails when it cannot read the operation backlog', function () {
+    File::put($this->opsDir.'/2023_01_01_000000_op.php', '<?php ');
+    config()->set('one-time-operations.table', 'missing_operations_table');
+
+    $result = OperationsBacklogCheck::new()->run();
+
+    expect($result->status)->toEqual(Status::failed())
+        ->and($result->shortSummary)->toBe('Check failed')
+        ->and($result->notificationMessage)->toContain('Could not check pending one-time operations');
 });
