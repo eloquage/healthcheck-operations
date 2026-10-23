@@ -1,6 +1,6 @@
 # Healthcheck operations for Laravel
 
-[![Tests](https://github.com/illuma-law/healthcheck-operations/actions/workflows/run-tests.yml/badge.svg)](https://github.com/illuma-law/healthcheck-operations/actions)
+[![Tests](https://github.com/eloquage/healthcheck-operations/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eloquage/healthcheck-operations/actions)
 [![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](http://choosealicense.com/licenses/mit/)
 [![Latest Stable Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-operations?label=Version)](https://packagist.org/packages/illuma-law/healthcheck-operations)
 
