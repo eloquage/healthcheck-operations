@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace IllumaLaw\HealthCheckOperations;
 
+use Illuminate\Support\Collection;
 use Spatie\Health\Checks\Check;
 use Spatie\Health\Checks\Result;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
@@ -12,8 +13,11 @@ final class OperationsBacklogCheck extends Check
 {
     public function run(): Result
     {
+        /** @var Collection<array-key, \SplFileInfo> $pending */
         $pending = OneTimeOperationManager::getUnprocessedFiles();
-        $count = $pending->count();
+        /** @var list<\SplFileInfo> $files */
+        $files = $pending->values()->all();
+        $count = count($files);
 
         if ($count === 0) {
             return Result::make()
@@ -22,10 +26,10 @@ final class OperationsBacklogCheck extends Check
                 ->ok('No pending one-time operations.');
         }
 
-        $oldestMtime = $pending->min(fn (\SplFileInfo $file): int => $file->getMTime());
-        $oldestAgeHours = $oldestMtime ? max(0, (now()->timestamp - (int) $oldestMtime) / 3600) : 0.0;
-
-        $names = $pending->map(fn (\SplFileInfo $file): string => $file->getBasename('.php'))->take(12)->values()->all();
+        $mtimes = array_map(static fn (\SplFileInfo $file): int => $file->getMTime(), $files);
+        $oldestMtime = min($mtimes);
+        $oldestAgeHours = max(0, (now()->timestamp - $oldestMtime) / 3600);
+        $names = array_slice(array_map(static fn (\SplFileInfo $file): string => $file->getBasename('.php'), $files), 0, 12);
 
         $result = Result::make()
             ->meta([
