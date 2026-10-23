@@ -38,7 +38,7 @@ it('fails when there are old pending operations', function () {
     $path = $this->opsDir.'/2023_01_01_000000_old_op.php';
     File::put($path, '<?php ');
 
-    touch($path, now()->subHours(25)->timestamp);
+    touch($path, (int) now()->subHours(25)->timestamp);
 
     $result = OperationsBacklogCheck::new()->run();
 
