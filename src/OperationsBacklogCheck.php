@@ -30,7 +30,7 @@ final class OperationsBacklogCheck extends Check
         $mtimes = array_map(static fn (\SplFileInfo $file): int => (int) $file->getMTime(), $files);
         sort($mtimes);
         $oldestMtime = $mtimes[0] ?? 0;
-        $oldestAgeHours = max(0, (now()->timestamp - $oldestMtime) / 3600);
+        $oldestAgeHours = max(0, ((int) now()->timestamp - $oldestMtime) / 3600);
         $names = array_slice(array_map(static fn (\SplFileInfo $file): string => $file->getBasename('.php'), $files), 0, 12);
 
         $result = Result::make()
