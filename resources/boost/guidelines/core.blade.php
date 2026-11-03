@@ -1,4 +1,4 @@
-# illuma-law/healthcheck-operations
+# eloquage/healthcheck-operations
 
 Checks if the `vector` extension (operations) is enabled and active in PostgreSQL.
 

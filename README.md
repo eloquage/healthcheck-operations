@@ -3,7 +3,7 @@
 ![Healthcheck Operations banner](art/banner.png)
 
 [![Tests](https://github.com/eloquage/healthcheck-operations/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eloquage/healthcheck-operations/actions/workflows/run-tests.yml)
-[![Latest Stable Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-operations?label=Version)](https://packagist.org/packages/illuma-law/healthcheck-operations)
+[![Latest Stable Version](https://img.shields.io/packagist/v/eloquage/healthcheck-operations?label=Version)](https://packagist.org/packages/eloquage/healthcheck-operations)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
 A [Spatie Laravel Health](https://spatie.be/docs/laravel-health) check for pending [Laravel One-Time Operations](https://github.com/TimoKoerber/laravel-one-time-operations). It reports the queue size, oldest operation age, and a sample of filenames.
@@ -18,7 +18,7 @@ A [Spatie Laravel Health](https://spatie.be/docs/laravel-health) check for pendi
 ## Installation
 
 ```bash
-composer require illuma-law/healthcheck-operations
+composer require eloquage/healthcheck-operations
 ```
 
 Laravel discovers the service provider automatically. Publish the configuration to choose whether an old backlog should fail:
